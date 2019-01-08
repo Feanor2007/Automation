@@ -1,0 +1,64 @@
+package com.automationPractiseTest;
+
+import org.junit.After;
+import org.junit.Before;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.support.ui.WebDriverWait;
+
+public class WebDriverSettings {
+    public WebDriver driver;
+    public WebDriverWait wait;
+
+    @Before
+    public void setup(){
+        System.setProperty("webdriver.chrome.driver", "src/main/resources/drivers/chromedriver.exe");
+        driver = new ChromeDriver();
+        driver.get("http://automationpractice.com");
+        wait = new WebDriverWait(driver, 10);
+    }
+
+    @After
+    public void close(){
+        driver.manage().deleteAllCookies();
+        driver.quit();
+    }
+}
+
+package com.automationPractiseTest;
+
+import org.junit.Assert;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.junit.Test;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+
+public class AutoPractiseTest extends WebDriverSettings {
+
+    @Test
+    public void secondTaskPlusFirst(){
+        ((ChromeDriver) driver).findElementByCssSelector("#block_top_menu > ul > li:nth-child(3) > a").click();
+        ((ChromeDriver) driver).findElementByXPath("//*[@id=\"center_column\"]/ul/li/div/div[1]/div/a[1]/img").click();
+        wait.until(ExpectedConditions.invisibilityOfElementLocated(By.className("buttons_bottom_block no-print")));
+        ((ChromeDriver) driver).findElementById("add_to_cart").click();
+        WebElement header = ((ChromeDriver) driver).findElementByClassName("clearfix");
+        wait.until(ExpectedConditions.invisibilityOfElementLocated(By.className("btn btn-default button button-medium")));
+        header.findElement(By.xpath(("//*[@id=\"layer_cart\"]/div[1]/div[2]/div[4]/a"))).click();
+        ((ChromeDriver) driver).findElementsByClassName("product-name");
+        WebElement product = ((ChromeDriver) driver).findElementByCssSelector("#product_1_1_0_0 > td.cart_description > p > a");
+        String productDescription = product.getText();
+        Assert.assertTrue(productDescription.equals("Faded Short Sleeve T-shirts"));
+    }
+
+    @Test
+    public void thirdTask(){
+        ((ChromeDriver) driver).findElementByCssSelector("#header > div.nav > div > div > nav > div.header_user_info > a").click();
+        ((ChromeDriver) driver).findElementByXPath("//*[@id=\"email\"]").sendKeys("provolovskyitest@bigmir.net");
+        ((ChromeDriver) driver).findElementByXPath("//*[@id=\"passwd\"]").sendKeys("290489zz");
+        ((ChromeDriver) driver).findElementById("SubmitLogin").click();
+        WebElement entering = ((ChromeDriver) driver).findElementByClassName("info-account");
+        String enteringText = entering.getText();
+        Assert.assertTrue(enteringText.equals("Welcome to your account. Here you can manage all of your personal information and orders."));
+    }
+}
